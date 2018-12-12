@@ -1,4 +1,5 @@
 # kitsuko
+<<<<<<< HEAD
 
 ## Project setup
 ```
@@ -27,3 +28,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+Exploration of JSON:API through Kitsu
+>>>>>>> 9d44ec5730de8a427078de6f1ffa52986c3bbfff
