@@ -1,5 +1,5 @@
 <template>
-  <md-app id="app" md-waterfall md-mode="fixed" :md-scrollbar="true">
+  <md-app id="app" >
     <md-app-toolbar class="md-primary">
       <span class="md-title">{{appName}}</span>
     </md-app-toolbar>
@@ -20,7 +20,7 @@
       </transition-group>
       <md-dialog :md-active.sync="isSelected" v-if="isSelected">
         <md-dialog-title>{{selected.canonicalTitle}}</md-dialog-title>
-        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + selected.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + selected.youtubeVideoId + '?autoplay=1'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <md-dialog-actions>
           <md-button class="md-primary" @click="selected = null">Close</md-button>
         </md-dialog-actions>
@@ -83,9 +83,10 @@ export default {
       background-size: cover;
 
       filter: saturate(33%);
-      transition: filter 0.5s ease;
+      transition: all 0.3s ease;
       &:hover {
         filter: saturate(100%);
+        transform: scale(1.2);
       }
 
       .md-card-header {
