@@ -10,6 +10,7 @@
   "dependencies": {
     "dotenv-webpack": "^1.5.7",
     "kitsu": "^6.5.1",
+    "loglevel": "^1.6.1",
     "vue": "^2.5.17",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^3.0.1",

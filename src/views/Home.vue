@@ -1,12 +1,12 @@
 <template>
-  <div >
+  <div class="md-layout md-gutter md-alignment-center">
     <transition-group name="rotateDownLeft" class="anime-list">
       <md-card class="anime" md-elevation-1 md-with-hover v-for="anime in hot"
         :key="anime.id" @click.native="() => select(anime)">
         <md-ripple >
           <md-card-media-cover md-solid>
             <md-card-media>
-              <img :src="anime.posterImage.large" width="550" height="780">
+              <img :src="anime.posterImage.small" width="550" height="780">
             </md-card-media>
             <md-card-area>
               <md-card-header>
@@ -19,13 +19,6 @@
         </md-ripple>
       </md-card>
     </transition-group>
-    <md-dialog :md-active.sync="isSelected" v-if="isSelected">
-      <md-dialog-title>{{selected.canonicalTitle}}</md-dialog-title>
-      <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + selected.youtubeVideoId + '?autoplay=1'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="selected = null">Close</md-button>
-      </md-dialog-actions>
-    </md-dialog>
   </div>
 </template>
 
@@ -34,18 +27,13 @@ export default {
   name: 'home',
   components: {
   },
-  data() {
-    return {
-      selected: null
-    };
-  },
   created() {
     this.$store.dispatch('fetchHot');
   },
   methods: {
     select(anime) {
       console.log('selected', anime);
-      this.selected = anime;
+      this.$router.push({path: '/anime/' + anime.id});
     }
   },
   computed: {

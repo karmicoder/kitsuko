@@ -10,6 +10,11 @@ export default new Router({
       path: '/',
       name: 'home',
       component: () => import('@/views/Home')
+    },
+    {
+      path: '/anime/:id',
+      name: 'anime',
+      component: () => import('@/views/Anime')
     }
   ]
 });

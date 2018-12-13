@@ -29,6 +29,13 @@ export default new Vuex.Store({
         commit('setHot', resp);
         return resp;
       });
+    },
+    fetchAnime(context, animeId) {
+      return api.get('anime/' + animeId, {
+        include: 'genres,episodes'
+      }).then((resp) => {
+        return resp.data;
+      });
     }
   }
 })
