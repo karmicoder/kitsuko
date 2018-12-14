@@ -9,9 +9,6 @@ Vue.use(Vuex);
 let hotRequest = new ApiRequest({
   name: 'hot',
   path: '/anime',
-  filter: {
-    status: 'current'
-  },
   sort: '-user_count',
   page: {
     limit: 14,

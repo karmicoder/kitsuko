@@ -4,6 +4,14 @@ const DEFAULTS = {
   method: 'get'
 };
 
+const SERIALIZED_FIELDS = [
+  'filter',
+  'sort',
+  'page',
+  'include',
+  'animeId'
+]
+
 export default class ApiRequest {
   constructor(src) {
     Object.assign(this, DEFAULTS, src);
@@ -23,14 +31,12 @@ export default class ApiRequest {
    * @return {Object} the request payload
    */
   payload() {
-    const result = {
-      filter: this.filter,
-      sort: this.sort,
-      page: this.page,
-    };
-    if (this.include) {
-      result.include = this.include;
-    }
+    const result = {};
+    SERIALIZED_FIELDS.forEach((field) => {
+      if (this[field] != null) {
+        result[field] = this[field];
+      }
+    });
     return result;
   }
 
