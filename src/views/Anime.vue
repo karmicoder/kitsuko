@@ -22,11 +22,9 @@
                   <img :src="ep.thumbnail.original">
                 </md-avatar>
                 <div class="md-list-item-text">
-                  <span>{{ep.titles.en_us || ep.canonicalTitle}}</span>
+                  <span>{{stringCoalesce(ep.titles.en_us, ep.canonicalTitle, 'TBD')}}</span>
                   <span>{{ep.titles.ja_jp}}</span>
                 </div>
-                <p slot="md-expand">
-                </p>
               </md-list-item>
             </md-list>
           </md-tab>
@@ -50,19 +48,24 @@
 import api from '@/api';
 import log from 'loglevel';
 
+import ApiRequest from '@/model/ApiRequest';
+import {stringCoalesce} from '@/utils/string';
+
 export default {
   name: 'Anime',
   data() {
     return {
-      anime: null,
+      animeRequest: new ApiRequest({
+        include: 'genres,episodes,characters'
+      })
     };
   },
   computed: {
+    anime() {
+      return this.$store.state['/anime/' + this.animeId] ? this.$store.state['/anime/' + this.animeId].data : null;
+    },
     animeId() {
       return this.$route.params.id;
-    },
-    baseApiUrl() {
-      return `anime/${this.animeId}/`;
     },
     seasons() {
       if (!this.anime || !Array.isArray(this.anime.episodes)) {
@@ -81,10 +84,10 @@ export default {
   methods: {
     load() {
       log.debug('loading anime ', this.animeId);
-      this.$store.dispatch('fetchAnime', this.animeId).then((resp) => {
-        this.anime = resp;
-      });
-    }
+      this.animeRequest.path = '/anime/' + this.animeId;
+      this.$store.dispatch('send', this.animeRequest);
+    },
+    stringCoalesce
   },
   created() {
     this.load()

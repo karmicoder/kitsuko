@@ -17,22 +17,38 @@
 
         </md-ripple>
       </md-card>
+      <md-button class="md-raised md-accent load-more" key="loadMore" :disabled="loading"
+        @click="nextPage()">Load More</md-button>
     </transition-group>
   </div>
 </template>
 
 <script>
+import ApiRequest from '@/model/ApiRequest';
+
 export default {
   name: 'home',
-  components: {
+  data() {
+    return {
+      loading: true
+    }
   },
   created() {
-    this.$store.dispatch('fetchHot');
+    this.$store.dispatch('fetchHot').finally(() => {
+      this.loading = false
+    });
   },
   methods: {
+    nextPage() {
+      this.loading = true;
+      this.$store.dispatch('fetchHot', true).finally(() => {
+        this.loading = false
+      });
+    },
     select(anime) {
-      console.log('selected', anime);
-      this.$router.push({path: '/anime/' + anime.id});
+      this.$router.push({
+        path: '/anime/' + anime.id
+      });
     }
   },
   computed: {
@@ -97,6 +113,11 @@ export default {
       height: $posterHeight;
       background-size: cover;
     }
+  }
+
+  .md-button.load-more {
+    flex-basis: 100%;
+    margin: 8px 15%;
   }
 }
 </style>
