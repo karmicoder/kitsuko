@@ -3,10 +3,9 @@
     <transition-group name="rotateDownLeft" class="anime-list">
       <md-card class="anime" md-elevation-1 md-with-hover v-for="anime in hot"
         :key="anime.id" @click.native="() => select(anime)">
-        <md-ripple >
+        <md-ripple>
           <md-card-media-cover md-solid>
-            <md-card-media>
-              <img :src="anime.posterImage.small" width="550" height="780">
+            <md-card-media :style="{'background-image': 'url(' + anime.posterImage.small + ')'}">
             </md-card-media>
             <md-card-area>
               <md-card-header>
@@ -53,13 +52,15 @@ export default {
 </script>
 <style lang="scss">
 .anime-list {
+  $posterWidth: 225px;
+  $posterHeight: 320px;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
 
   .md-card.anime {
-    height: 320px;
-    width: 225px;
+    height: $posterHeight;
+    width: $posterWidth;
     margin: 8px;
     // background-position: center;
     // background-size: cover;
@@ -80,12 +81,21 @@ export default {
       white-space: nowrap;
       text-align: center;
 
+      span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
     }
     .md-card-actions {
       position: absolute;
       bottom: 0;
       width: 100%;
 
+    }
+    .md-card-media {
+      height: $posterHeight;
+      background-size: cover;
     }
   }
 }

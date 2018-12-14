@@ -2,7 +2,9 @@
   <div id="app">
     <md-app md-mode="fixed">
       <md-app-toolbar class="md-primary">
-        <router-link to="/"><span class="md-display-1">🦊 {{appName}}</span></router-link>
+        <router-link to="/" class="md-display-1">
+          <md-icon>gesture</md-icon>
+          <span>{{appName}}</span></router-link>
       </md-app-toolbar>
       <md-app-content flex>
         <transition name="fadeLeft">
@@ -40,7 +42,7 @@ export default {
     width: 100%;
     overflow-x: hidden;
 
-    > .md-app-container {
+    .md-app-scroller {
       overflow-x: hidden;
     }
   }

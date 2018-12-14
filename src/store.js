@@ -32,7 +32,7 @@ export default new Vuex.Store({
     },
     fetchAnime(context, animeId) {
       return api.get('anime/' + animeId, {
-        include: 'genres,episodes'
+        include: 'genres,episodes,characters'
       }).then((resp) => {
         return resp.data;
       });

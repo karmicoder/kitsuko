@@ -7,7 +7,7 @@
         <p>
           {{anime.synopsis}}
         </p>
-        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId + '?autoplay=1'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
       <md-progress-spinner v-if="anime == null" class="md-accent" md-mode="indeterminate"></md-progress-spinner>
     </div>
@@ -16,11 +16,19 @@
         <h3>Seasons</h3>
         <md-tabs>
           <md-tab v-for="(episodes, seasonNumber) in seasons" :md-label="seasonNumber + 1">
-            <ul>
-              <li v-for="ep in episodes">
-                {{ep.canonicalTitle}}
-              </li>
-            </ul>
+            <md-list class="md-double-line">
+              <md-list-item v-for="ep in episodes">
+                <md-avatar v-if="ep.thumbnail && ep.thumbnail.original">
+                  <img :src="ep.thumbnail.original">
+                </md-avatar>
+                <div class="md-list-item-text">
+                  <span>{{ep.titles.en_us || ep.canonicalTitle}}</span>
+                  <span>{{ep.titles.ja_jp}}</span>
+                </div>
+                <p slot="md-expand">
+                </p>
+              </md-list-item>
+            </md-list>
           </md-tab>
         </md-tabs>
       </div>
