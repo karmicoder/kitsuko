@@ -7,15 +7,15 @@
         <p class="md-caption">
           {{anime.genres.map((g) => g.name).join('・')}}
         </p>
+        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p>
           {{anime.synopsis}}
         </p>
-        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
       <md-progress-spinner v-if="anime == null" class="md-accent" md-mode="indeterminate"></md-progress-spinner>
     </div>
     <div class="md-layout-item" style="flex-basis: 100px"  v-if="seasons && seasons.length > 0">
-      <div class="content">
+      <div class="content seasons">
         <h3>Seasons</h3>
         <md-tabs>
           <md-tab v-for="(episodes, seasonNumber) in seasons" :md-label="seasonNumber + 1">
@@ -34,13 +34,13 @@
         </md-tabs>
       </div>
     </div>
-    <div class="md-layout-item" style="flex-basis: 100px">
+    <div class="characters md-layout-item" style="flex-basis: 100px">
       <h3>Characters</h3>
       <md-list class="md-double-line">
         <md-list-item v-for="character in characters">
-          <md-avatar v-if="character.image && character.image.original">
-            <img :src="character.image.original">
-          </md-avatar>
+          <div class="md-avatar" v-if="character.image && character.image.original"
+            :style="{'background-image': `url(${character.image.original})`}">
+          </div>
           <div class="md-list-item-text">
             <span>{{stringCoalesce(character.canonicalName, character.names.en)}}</span>
             <span>{{stringCoalesce(character.names.ja_jp, character.otherNames.join(', '))}}</span>
@@ -153,3 +153,24 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+  .anime-details {
+    .seasons {
+      .md-avatar {
+        width: 100px;
+        height: 56px;
+        border-radius: 4px;
+      }
+    }
+
+    .characters {
+      .md-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 4px;
+        background-size: cover;
+        background-position: center;
+      }
+    }
+  }
+</style>

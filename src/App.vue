@@ -3,8 +3,9 @@
     <md-app md-mode="fixed">
       <md-app-toolbar class="md-primary">
         <router-link to="/" class="md-display-1">
+          <span>{{appName}}</span>
           <md-icon>gesture</md-icon>
-          <span>{{appName}}</span></router-link>
+        </router-link>
       </md-app-toolbar>
       <md-app-content flex>
         <transition name="fadeLeft">
@@ -33,7 +34,9 @@ export default {
 
 <style lang="scss">
 #app {
-
+  .md-toolbar .md-display-1 {
+    margin-left: 0px;
+  }
   .md-app {
     position: absolute;
     top: 0;
