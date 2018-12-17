@@ -2,13 +2,13 @@
   <div class="anime-details md-layout md-gutter">
     <div class="md-layout-item" style="flex-basis: 400px">
       <div class="content" v-if="anime">
-        <h1 style="md-title">{{anime.canonicalTitle}}</h1>
-        <h3 style="md-subheading">{{anime.titles.ja_jp}}</h3>
-        <p class="md-caption">
+        <div class="md-display-2">{{anime.canonicalTitle}}</div>
+        <div class="md-caption">{{anime.titles.ja_jp}}</div>
+        <div class="md-caption">
           {{anime.genres.map((g) => g.name).join('・')}}
-        </p>
+        </div>
         <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <p>
+        <p class="md-body-1">
           {{anime.synopsis}}
         </p>
       </div>
@@ -16,9 +16,8 @@
     </div>
     <div class="md-layout-item" style="flex-basis: 100px"  v-if="seasons && seasons.length > 0">
       <div class="content seasons">
-        <h3>Seasons</h3>
         <md-tabs>
-          <md-tab v-for="(episodes, seasonNumber) in seasons" :md-label="seasonNumber + 1">
+          <md-tab v-for="(episodes, seasonNumber) in seasons" :md-label="'S' + (seasonNumber + 1)">
             <md-list class="md-double-line">
               <md-list-item v-for="ep in episodes" @click="selectEpisode(ep.id)">
                 <md-avatar v-if="ep.thumbnail && ep.thumbnail.original">
@@ -35,18 +34,26 @@
       </div>
     </div>
     <div class="characters md-layout-item" style="flex-basis: 100px">
-      <h3>Characters</h3>
-      <md-list class="md-double-line">
-        <md-list-item v-for="character in characters">
-          <div class="md-avatar" v-if="character.image && character.image.original"
-            :style="{'background-image': `url(${character.image.original})`}">
-          </div>
-          <div class="md-list-item-text">
-            <span>{{stringCoalesce(character.canonicalName, character.names.en)}}</span>
-            <span>{{stringCoalesce(character.names.ja_jp, character.otherNames.join(', '))}}</span>
-          </div>
-        </md-list-item>
-      </md-list>
+      <md-tabs>
+        <md-tab md-label="Characters">
+          <md-list class="md-triple-line">
+            <md-list-item v-for="{character, person} in castings">
+              <div class="md-avatar" v-if="character.image && character.image.original"
+                :style="{'background-image': `url(${character.image.original})`}">
+              </div>
+              <div class="md-list-item-text">
+                <span>
+                  {{stringCoalesce(character.canonicalName, character.names.en)}}
+                  <span class="md-caption">{{stringCoalesce(character.names.ja_jp, character.otherNames.join(', '))}}</span>
+                </span>
+                <span>{{person.name}}</span>
+                <span>{{character.otherNames.join('・')}}</span>
+              </div>
+            </md-list-item>
+          </md-list>
+        </md-tab>
+      </md-tabs>
+
     </div>
     <md-drawer v-if="selectedEpisode" class="md-right" :md-active.sync="hasSelectedEpisode">
       <episode :episode="selectedEpisode"></episode>
@@ -72,16 +79,16 @@ export default {
       animeRequest: new ApiRequest({
         include: 'genres,episodes'
       }),
-      charactersRequest: new ApiRequest({
+      castingsRequest: new ApiRequest({
         path: '/castings',
         filter: {
           mediaId: this.animeId,
           language: 'Japanese',
           isCharacter: true
         },
-        include: 'character'
+        include: 'character,person'
       }),
-      characters: null,
+      castings: null,
       selectedEpisode: null
     };
   },
@@ -96,9 +103,22 @@ export default {
       get() { return this.selectedEpisode != null; },
       set(val) {
         if (val === false) {
-          this.selectedEpisode = null;
+          this.$router.push({
+            query: {
+              episode: undefined
+            }
+          });
         }
       }
+    },
+    gesture() {
+      let rating = Number(this.anime.averageRating);
+      if (rating > 75) {
+        return 'up';
+      } else if (rating > 50) {
+        return 'up-down';
+      }
+      return 'down';
     },
     seasons() {
       if (!this.anime || !Array.isArray(this.anime.episodes)) {
@@ -125,9 +145,9 @@ export default {
         }
       });
 
-      this.charactersRequest.filter.mediaId = this.animeId;
-      this.$store.dispatch('send', this.charactersRequest).then((resp) => {
-        this.characters = resp.data.map((row) => row.character);
+      this.castingsRequest.filter.mediaId = this.animeId;
+      this.$store.dispatch('send', this.castingsRequest).then((resp) => {
+        this.castings = resp.data.map((row) => row);
       });
     },
     selectEpisode(id) {
@@ -159,7 +179,7 @@ export default {
       .md-avatar {
         width: 100px;
         height: 56px;
-        border-radius: 4px;
+        border-radius: 0px;
       }
     }
 
@@ -170,6 +190,9 @@ export default {
         border-radius: 4px;
         background-size: cover;
         background-position: center;
+      }
+      .md-list-item-text * {
+        max-width: 350px;
       }
     }
   }

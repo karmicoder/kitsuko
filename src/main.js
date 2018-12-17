@@ -6,7 +6,6 @@ import store from './store';
 import router from '@/router';
 
 import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default-dark.css'; // This line here
 import 'vue2-animate/dist/vue2-animate.min.css';
 
 Vue.use(VueMaterial);
