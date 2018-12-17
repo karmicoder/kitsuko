@@ -1,6 +1,11 @@
 <template>
 <div class="episode md-content">
-  <div class="md-title">S{{episode.seasonNumber}}E{{episode.number}} – {{episode.canonicalTitle}}</div>
+  <div class="md-title">
+    S{{episode.seasonNumber}}E{{episode.number}} – {{episode.canonicalTitle}}
+    <md-button style="float: right" class="md-icon-button" @click="$emit('close')">
+      <md-icon>close</md-icon>
+    </md-button>
+  </div>
   <div class="md-subheading" v-if="episode.titles.ja_jp">{{episode.titles.ja_jp}}</div>
   <img :src="episode.thumbnail.original">
   <p v-for="p in episode.synopsis.split('\n')">
