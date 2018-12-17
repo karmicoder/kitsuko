@@ -3,20 +3,20 @@
     <div class="md-layout-item" style="flex-basis: 400px">
       <div class="content" v-if="anime">
         <div class="md-display-2">{{anime.canonicalTitle}}</div>
-        <div class="md-caption">{{anime.titles.ja_jp}}</div>
+        <div class="md-subheading">{{anime.titles.ja_jp}}</div>
         <div class="md-caption">
           {{anime.genres.map((g) => g.name).join('・')}}
         </div>
         <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <p class="md-body-1">
-          {{anime.synopsis}}
+        <p class="md-body-1" v-for="p in anime.synopsis.split('\n')">
+          {{p}}
         </p>
       </div>
       <md-progress-spinner v-if="anime == null" class="md-accent" md-mode="indeterminate"></md-progress-spinner>
     </div>
     <div class="md-layout-item" style="flex-basis: 100px"  v-if="seasons && seasons.length > 0">
       <div class="content seasons">
-        <md-tabs>
+        <md-tabs class="md-scrollbar" v-if="!hasSelectedEpisode">
           <md-tab v-for="(episodes, seasonNumber) in seasons" :md-label="'S' + (seasonNumber + 1)">
             <md-list class="md-double-line">
               <md-list-item v-for="ep in episodes" @click="selectEpisode(ep.id)">
@@ -31,6 +31,9 @@
             </md-list>
           </md-tab>
         </md-tabs>
+        <md-content v-if="hasSelectedEpisode" class="episode-details">
+          <episode :episode="selectedEpisode"></episode>
+        </md-content>
       </div>
     </div>
     <div class="characters md-layout-item" style="flex-basis: 100px">
@@ -53,11 +56,7 @@
           </md-list>
         </md-tab>
       </md-tabs>
-
     </div>
-    <md-drawer v-if="selectedEpisode" class="md-right" :md-active.sync="hasSelectedEpisode">
-      <episode :episode="selectedEpisode"></episode>
-    </md-drawer>
   </div>
 </template>
 <script>
@@ -67,6 +66,7 @@ import log from 'loglevel';
 import episodeComponent from '@/components/episode';
 
 import ApiRequest from '@/model/ApiRequest';
+import DataSource from '@/model/DataSource';
 import {stringCoalesce} from '@/utils/string';
 
 export default {
@@ -76,8 +76,10 @@ export default {
   },
   data() {
     return {
-      animeRequest: new ApiRequest({
-        include: 'genres,episodes'
+      animeSrc: new DataSource({
+        request: {
+          include: 'genres,episodes'
+        }
       }),
       castingsRequest: new ApiRequest({
         path: '/castings',
@@ -94,7 +96,7 @@ export default {
   },
   computed: {
     anime() {
-      return this.$store.state['/anime/' + this.animeId] ? this.$store.state['/anime/' + this.animeId].data : null;
+      return this.animeSrc.data;
     },
     animeId() {
       return this.$route.params.id;
@@ -138,8 +140,8 @@ export default {
     load() {
       log.debug('loading anime ', this.animeId);
 
-      this.animeRequest.path = '/anime/' + this.animeId;
-      this.$store.dispatch('send', this.animeRequest).then(() => {
+      this.animeSrc.request.path = '/anime/' + this.animeId;
+      this.$store.dispatch('fetch', this.animeSrc).then(() => {
         if (this.$route.query.episode && this.anime && this.anime.episodes) {
           this.selectedEpisode = this.anime.episodes.find((ep) => ep.id === this.$route.query.episode);
         }

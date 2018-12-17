@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import api from '@/api';
+import DataSource from '@/model/DataSource';
 import ApiRequest from '@/model/ApiRequest';
 
 Vue.use(Vuex);
@@ -51,6 +52,14 @@ export default new Vuex.Store({
       } else {
         return Promise.resolve(state.hot);
       }
+    },
+    fetch({dispatch}, dataSource) {
+      if (!(dataSource instanceof DataSource)) {
+        throw new Error('Fetch argument must be instance of DataSource');
+      }
+      return dispatch('send', dataSource.request).then((resp) => {
+        dataSource.receiveResponse(resp);
+      });
     },
     send({commit}, req) {
       if (!(req instanceof ApiRequest)) {

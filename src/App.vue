@@ -8,7 +8,7 @@
         </router-link>
       </md-app-toolbar>
       <md-app-content flex>
-        <transition name="fadeUp">
+        <transition name="slideUp">
           <router-view></router-view>
         </transition>
       </md-app-content>

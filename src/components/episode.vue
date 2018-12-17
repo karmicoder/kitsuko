@@ -1,8 +1,13 @@
 <template>
 <div class="episode md-content">
-  <h1>S{{episode.seasonNumber}}E{{episode.number}} – {{episode.canonicalTitle}}</h1>
-  <p>
-    {{episode.synopsis}}
+  <div class="md-title">S{{episode.seasonNumber}}E{{episode.number}} – {{episode.canonicalTitle}}</div>
+  <div class="md-subheading" v-if="episode.titles.ja_jp">{{episode.titles.ja_jp}}</div>
+  <img :src="episode.thumbnail.original">
+  <p v-for="p in episode.synopsis.split('\n')">
+    {{p}}
+  </p>
+  <p v-if="episode.airdate">
+    Originally Aired {{episode.airdate}}
   </p>
 </div>
 </template>
@@ -14,3 +19,11 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.episode {
+  > img {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>
