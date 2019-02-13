@@ -1,16 +1,35 @@
 <template>
   <div class="anime-details md-layout md-gutter">
+    <div class="md-layout-item md-display-2" style="flex-basis: 100%">{{anime.canonicalTitle}}</div>
+
     <div class="md-layout-item" style="flex-basis: 400px">
       <div class="content" v-if="anime">
-        <div class="md-display-2">{{anime.canonicalTitle}}</div>
         <div class="md-subheading">{{anime.titles.ja_jp}}</div>
         <p class="md-caption">
           {{anime.genres.map((g) => g.name).join('・')}}
         </p>
-        <iframe width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe v-if="anime.youtubeVideoId" width="560" height="315" style="height: 315px" :src="'https://www.youtube.com/embed/' + anime.youtubeVideoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p class="md-body-1" v-for="p in anime.synopsis.split('\n')">
           {{p}}
         </p>
+      </div>
+      <div class="related md-layout-item" v-if="anime">
+        <div class="md-display-1">
+          Related Anime
+        </div>
+        <md-list class="md-triple-line">
+          <md-list-item v-for="rel in anime.mediaRelationships" :key="rel.id"
+            @click="$router.push({path: '/anime/' + rel.destination.id})">
+            <md-avatar v-if="rel.destination.posterImage && rel.destination.posterImage.small"
+              :style="{'background-image': 'url(' + rel.destination.posterImage.small + ')'}">
+            </md-avatar>
+            <div class="md-list-item-text">
+              <span>{{rel.destination.canonicalTitle}}</span>
+              <span>{{rel.destination.titles.ja_jp}}</span>
+              <span>{{rel.destination.synopsis}}</span>
+            </div>
+          </md-list-item>
+        </md-list>
       </div>
       <md-progress-spinner v-if="anime == null" class="md-accent" md-mode="indeterminate"></md-progress-spinner>
     </div>
@@ -40,7 +59,7 @@
       <md-tabs v-if="!selectedCasting">
         <md-tab md-label="Characters">
           <md-list class="md-triple-line">
-            <md-list-item v-for="{character, person, id} in castings" @click="selectCasting(id)">
+            <md-list-item v-for="{character, person, id} in castings" :key="id" @click="selectCasting(id)">
               <div class="md-avatar" v-if="character.image && character.image.original"
                 :style="{'background-image': `url(${character.image.original})`}">
               </div>
@@ -73,10 +92,10 @@
         <span>{{selectedCasting.character.otherNames.join('・')}}</span>
       </md-content>
     </div>
+
   </div>
 </template>
 <script>
-import api from '@/api';
 import log from 'loglevel';
 
 import episodeComponent from '@/components/episode';
@@ -94,7 +113,7 @@ export default {
     return {
       animeSrc: new DataSource({
         request: {
-          include: 'genres,episodes'
+          include: 'genres,episodes,quotes,mediaRelationships.destination'
         }
       }),
       castingsRequest: new ApiRequest({
@@ -222,6 +241,21 @@ export default {
       }
       .md-list-item-text * {
         max-width: 350px;
+      }
+    }
+
+    .related {
+      max-width: 500px;
+      .md-list {
+        position: relative;
+        left: -15px;
+      }
+      .md-avatar {
+        width: 71px;
+        height: 100px;
+        border-radius: 4px;
+        background-size: cover;
+        background-position: center;
       }
     }
   }

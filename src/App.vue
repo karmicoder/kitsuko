@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <md-app md-mode="fixed">
+    <md-app md-mode="fixed" md-waterfall>
       <md-app-toolbar class="md-primary">
         <router-link to="/" class="md-display-2">
           <span>{{appName}}</span>
@@ -8,13 +8,12 @@
         </router-link>
       </md-app-toolbar>
       <md-app-content flex>
-        <transition name="slideUp">
+        <transition name="fade">
           <router-view></router-view>
         </transition>
       </md-app-content>
     </md-app>
   </div>
-
 </template>
 
 <script>
@@ -43,6 +42,7 @@ export default {
 
 @import "~vue-material/dist/theme/all";
 #app {
+
   .md-toolbar .md-display-2 {
     margin-left: 0px;
 
@@ -58,6 +58,7 @@ export default {
       top: 12px;
     }
   }
+
   .md-app {
     position: absolute;
     top: 0;
@@ -68,6 +69,7 @@ export default {
 
     .md-app-scroller {
       overflow-x: hidden;
+      overflow-y: scroll;
     }
   }
 }

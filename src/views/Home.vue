@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout md-gutter md-alignment-center">
-    <transition-group name="rotateDownLeft" class="anime-list">
+    <transition-group name="rotate" class="anime-list">
       <md-card class="anime" md-elevation-1 md-with-hover v-for="anime in hot"
         :key="anime.id" @click.native="() => select(anime)">
         <md-ripple>
@@ -82,7 +82,7 @@ export default {
     // background-size: cover;
 
     filter: saturate(33%);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
     &:hover {
       filter: saturate(100%);
       transform: scale(1.2);
